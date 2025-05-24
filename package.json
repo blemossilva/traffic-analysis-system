@@ -1,0 +1,9 @@
+{
+  "name": "traffic-analysis-system",
+  "version": "1.0.0",
+  "description": "Reconhecimento de matrículas e identificação de veículos no Raspberry Pi",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Bruno",
+  "license": "MIT"
+}
