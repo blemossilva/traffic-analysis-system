@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """
+Teste Bruno
 Script para somar dois números.
 Lê dois valores (inteiros ou floats) do teclado, trata
 erro de conversão e exibe a soma.
