@@ -15,10 +15,15 @@
             <input type="number" id="hours" name="hours" min="1" max="24" value="{{ selected_hours }}">
             <button type="submit">Atualizar</button>
         </form>
+        <div class="camera-preview">
+            <h2>Visão da Câmera</h2>
+            <img src="{{ url_for('video_feed') }}" alt="Camera feed">
+        </div>
         <canvas id="barChart"></canvas>
         <table id="plates-table">
             <thead>
                 <tr>
+                    <th>Imagem</th>
                     <th>Matrícula</th>
                     <th>Data e Hora</th>
                 </tr>
@@ -26,6 +31,12 @@
             <tbody>
                 {% for rec in records %}
                 <tr>
+                    <td>
+                        {% if rec.image %}
+                            <img src="{{ url_for('static', filename='captures/' + rec.image) }}"
+                                 alt="{{ rec.plate }}" width="200">
+                        {% endif %}
+                    </td>
                     <td>{{ rec.plate }}</td>
                     <td>{{ rec.timestamp }}</td>
                 </tr>

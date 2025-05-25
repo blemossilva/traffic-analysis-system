@@ -51,7 +51,11 @@ Para iniciar a aplicação:
 ```bash
 python3 -m app.web
 ```
+
 Acesse `http://localhost:5000` no navegador.
+
+- As imagens capturadas são guardadas em `static/captures/` e exibidas na interface web.
+- A interface exibe também o feed de vídeo ao vivo da câmera.
 
 ## Testes
 

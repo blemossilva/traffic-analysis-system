@@ -1,16 +1,48 @@
 #!/usr/bin/env python3
 """Módulo web para servir interface usando Flask."""
 
-from flask import Flask, render_template, request
+import os
+import cv2
+from flask import Flask, render_template, request, Response
 from datetime import datetime, timedelta
 from threading import Thread
 from .camera import Camera
 from .recognition import recognize_plate
 from .storage import Storage
 
-app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+template_dir = os.path.abspath(os.path.join(basedir, os.pardir, 'templates'))
+static_dir = os.path.abspath(os.path.join(basedir, os.pardir, 'static'))
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 storage = Storage()
 camera = Camera().start()
+
+def gen_frames():
+    while True:
+        frame = camera.read()
+        if frame is None:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.bilateralFilter(gray, 11, 17, 17)
+        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        contours, _ = cv2.findContours(morph, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            ratio = w / float(h) if h > 0 else 0
+            if 2 < ratio < 6 and w * h > 1000:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        ret, buffer = cv2.imencode('.jpg', frame)
+        if not ret:
+            continue
+        frame_bytes = buffer.tobytes()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def capture_loop():
     while True:
@@ -18,7 +50,7 @@ def capture_loop():
         if frame is not None:
             plates = recognize_plate(frame)
             for plate in plates:
-                storage.add_plate(plate)
+                storage.add_plate(plate, frame)
 
 
 @app.route('/', methods=['GET'])
@@ -32,7 +64,11 @@ def index():
     records = [r for r in storage.get_records() if start_time <= r['timestamp'] <= end_time]
     # Prepare table data
     table_records = [
-        {'plate': r['plate'], 'timestamp': r['timestamp'].strftime('%Y-%m-%d %H:%M:%S')}
+        {
+            'plate': r['plate'],
+            'timestamp': r['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
+            'image': r.get('image')
+        }
         for r in sorted(records, key=lambda x: x['timestamp'], reverse=True)
     ]
     # Prepare chart data

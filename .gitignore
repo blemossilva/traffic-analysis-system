@@ -4,3 +4,6 @@ venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Diretório com imagens capturadas (não versionar)
+static/captures/
