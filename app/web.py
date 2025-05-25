@@ -4,9 +4,9 @@
 from flask import Flask, render_template, request
 from datetime import datetime, timedelta
 from threading import Thread
-from app.camera import Camera
-from app.recognition import recognize_plate
-from app.storage import Storage
+from .camera import Camera
+from .recognition import recognize_plate
+from .storage import Storage
 
 app = Flask(__name__)
 storage = Storage()

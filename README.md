@@ -49,7 +49,7 @@ Este projeto captura imagens de veículos usando uma webcam, identifica automati
 
 Para iniciar a aplicação:
 ```bash
-python3 app/web.py
+python3 -m app.web
 ```
 Acesse `http://localhost:5000` no navegador.
 
@@ -76,7 +76,7 @@ pytest
 3. Conecte a câmera USB ou Pi Camera ao Raspberry Pi.
 4. Execute a aplicação:
    ```bash
-   python3 app/web.py
+   python3 -m app.web
    ```
 5. No navegador de outro dispositivo, acesse:
    ```
