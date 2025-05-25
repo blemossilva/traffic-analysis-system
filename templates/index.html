@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Analysis System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='chart.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Traffic Analysis System</h1>
+        <form method="get" action="{{ url_for('index') }}">
+            <label for="hours">Horas a visualizar:</label>
+            <input type="number" id="hours" name="hours" min="1" max="24" value="{{ selected_hours }}">
+            <button type="submit">Atualizar</button>
+        </form>
+        <canvas id="barChart"></canvas>
+        <table id="plates-table">
+            <thead>
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Data e Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in records %}
+                <tr>
+                    <td>{{ rec.plate }}</td>
+                    <td>{{ rec.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        var ctx = document.getElementById('barChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels | tojson }},
+                datasets: [{
+                    label: 'Matrículas por hora',
+                    data: {{ counts | tojson }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>

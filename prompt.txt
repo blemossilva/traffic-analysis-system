@@ -1,0 +1,37 @@
+Cria o código completo da aplicação "Traffic Analysis System" em Python para Raspberry Pi, seguindo a seguinte estrutura de pastas:
+traffic-analysis-system/
+├── app/
+│ ├── camera.py
+│ ├── recognition.py
+│ ├── storage.py
+│ ├── web.py
+├── static/
+│ ├── style.css
+│ ├── chart.js
+├── templates/
+│ ├── index.html
+├── tests/
+│ ├── test_recognition.py
+├── requirements.txt
+├── README.md
+
+
+A aplicação deve:
+✅ Capturar continuamente imagens da webcam (OpenCV) em **`app/camera.py`**.  
+✅ Reconhecer matrículas dos veículos (OpenALPR ou OpenCV+OCR) em **`app/recognition.py`**.  
+✅ Armazenar as matrículas, data e hora num ficheiro CSV em **`app/storage.py`**, com lógica de debounce para evitar duplicação de registo da mesma matrícula durante um curto período de tempo (por exemplo, 1 minuto).  
+✅ Servir uma interface web moderna e arrojada em **`app/web.py`** usando Flask.  
+✅ A interface web deve:  
+- Mostrar as matrículas capturadas com data e hora (minuto e segundo).  
+- Ter um gráfico de barras (Chart.js) que mostra o número de matrículas identificadas nas últimas X horas, onde o utilizador pode especificar o número de horas a visualizar.  
+- Ter um design responsivo e bonito.  
+✅ Ter um ficheiro **`requirements.txt`** com todas as dependências.  
+✅ Ter testes automatizados em **`tests/test_recognition.py`** para validar a lógica principal.  
+✅ Ter um **`README.md`** com instruções para:  
+- Ativar ambiente virtual  
+- Instalar dependências  
+- Executar a aplicação (`python app/web.py`)  
+- Executar os testes (`pytest` ou `python -m unittest`).  
+
+Gera todo o código necessário para o projeto. No final, inclui um bloco com instruções passo a passo para o utilizador executar o projeto no Raspberry Pi.
+
