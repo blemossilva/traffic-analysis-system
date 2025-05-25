@@ -20,10 +20,6 @@ def capture_loop():
             for plate in plates:
                 storage.add_plate(plate)
 
-if __name__ == '__main__':
-    thread = Thread(target=capture_loop, daemon=True)
-    thread.start()
-    app.run(host='0.0.0.0', port=5000)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -49,3 +45,8 @@ def index():
         labels.append(segment_start.strftime('%H:%M'))
         counts.append(count)
     return render_template('index.html', records=table_records, labels=labels, counts=counts, selected_hours=hours)
+
+if __name__ == '__main__':
+    thread = Thread(target=capture_loop, daemon=True)
+    thread.start()
+    app.run(host='0.0.0.0', port=5000)
